@@ -7,10 +7,8 @@ app = Flask(__name__)
 
 UPLOAD_FOLDER = 'static/img/'
 
-
 app.secret_key = "secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
@@ -27,7 +25,6 @@ def home():
 
 @app.route('/', methods=['POST'])
 def upload_image():
-    ffile = os.listdir(UPLOAD_FOLDER)
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
@@ -40,6 +37,7 @@ def upload_image():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         flash('Image successfully uploaded and displayed below')
         redirect(request.url)
+        ffile = os.listdir(UPLOAD_FOLDER)
         return render_template('index.html', filename=filename, folder=UPLOAD_FOLDER, ffile=ffile)
 
     else:
@@ -47,7 +45,7 @@ def upload_image():
         return redirect(request.url)
 
 
-@app.route('/display/<filename>')
+@app.route('/<filename>')
 def display_image(filename):
     return redirect(url_for('static', filename='img/' + filename))
 
